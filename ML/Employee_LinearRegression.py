@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
@@ -51,12 +50,15 @@ while True:
         except ValueError:
             print("Vui lòng nhập số!")
 
-# Tính giá trị trung bình của các cột other_cost và savings
+# Tính giá trị trung bình của các cột 
+mean_food_cost = data['food_cost'].mean()
+mean_rent = data['rent'].mean()
 mean_other_cost = data['other_cost'].mean()
 mean_savings = data['savings'].mean()
 
 # Chuẩn hóa dữ liệu đầu vào
-input_data = scaler.transform([[total_amount, mean_other_cost, mean_savings, 0]])
+input_data = scaler.transform([[mean_food_cost, mean_rent, mean_other_cost, mean_savings]])
+
 
 # Dự đoán tỷ lệ phần trăm cho mỗi mục
 predicted_ratios = model.predict(input_data)[0]
@@ -100,9 +102,9 @@ print("Root Mean Squared Error:", rmse)
 print("Mean Absolute Error:", mae)
 
 # Trực quan hóa kết quả dự đoán
-# plt.scatter(y_test.values.flatten(), y_pred.flatten(), alpha=0.5)
-# plt.plot([0, 1], [0, 1], '--r')
-# plt.xlabel("Giá trị thực")
-# plt.ylabel("Giá trị dự đoán")
-# plt.title("Dự đoán so với giá trị thực")
-# plt.show()
+plt.scatter(y_test.values.flatten(), y_pred.flatten(), alpha=0.5)
+plt.plot([0, 1], [0, 1], '--r')
+plt.xlabel("Giá trị thực")
+plt.ylabel("Giá trị dự đoán")
+plt.title("Dự đoán so với giá trị thực")
+plt.show()

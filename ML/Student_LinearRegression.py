@@ -50,11 +50,13 @@ while True:
         except ValueError:
             print("Vui lòng nhập số!")
 
-# Tính giá trị trung bình của các cột other_cost và savings
+# Tính giá trị trung bình của các cột 
+mean_food_cost = data['food_cost'].mean()
+mean_rent = data['rent'].mean()
 mean_other_cost = data['other_cost'].mean()
 
 # Chuẩn hóa dữ liệu đầu vào
-input_data = scaler.transform([[total_amount, mean_other_cost, 0]])
+input_data = scaler.transform([[mean_food_cost, mean_rent, mean_other_cost]])
 
 # Dự đoán tỷ lệ phần trăm cho mỗi mục
 predicted_ratios = model.predict(input_data)[0]
