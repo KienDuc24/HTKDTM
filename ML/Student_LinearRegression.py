@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 
 # Đọc dữ liệu từ file CSV
-data = pd.read_csv('Data/Employee_data.csv')
+data = pd.read_csv('Data/Student_data.csv')
 
 # Kiểm tra và xử lý dữ liệu bị thiếu
 data.dropna(inplace=True)
@@ -17,11 +17,10 @@ data.dropna(inplace=True)
 data['food_ratio'] = data['food_cost'] / data['total']
 data['rent_ratio'] = data['rent'] / data['total']
 data['other_cost_ratio'] = data['other_cost'] / data['total']
-data['savings_ratio'] = data['savings'] / data['total']
 
 # Chia dữ liệu thành các biến độc lập (X) và biến phụ thuộc (y)
-X = data[['food_cost', 'rent', 'other_cost', 'savings']]
-y = data[['food_ratio', 'rent_ratio', 'other_cost_ratio', 'savings_ratio']]
+X = data[['food_cost', 'rent', 'other_cost']]
+y = data[['food_ratio', 'rent_ratio', 'other_cost_ratio']]
 
 # Chuẩn hóa dữ liệu
 scaler = StandardScaler()
@@ -53,10 +52,9 @@ while True:
 
 # Tính giá trị trung bình của các cột other_cost và savings
 mean_other_cost = data['other_cost'].mean()
-mean_savings = data['savings'].mean()
 
 # Chuẩn hóa dữ liệu đầu vào
-input_data = scaler.transform([[total_amount, mean_other_cost, mean_savings, 0]])
+input_data = scaler.transform([[total_amount, mean_other_cost, 0]])
 
 # Dự đoán tỷ lệ phần trăm cho mỗi mục
 predicted_ratios = model.predict(input_data)[0]
@@ -69,17 +67,15 @@ predicted_ratios /= np.sum(predicted_ratios)  # Chuẩn hóa lại tổng tỷ l
 predicted_food = round(predicted_ratios[0] * total_amount / 1000) * 1000
 predicted_rent = round(predicted_ratios[1] * total_amount / 1000) * 1000
 predicted_other = round(predicted_ratios[2] * total_amount / 1000) * 1000
-predicted_savings = round(predicted_ratios[3] * total_amount / 1000) * 1000
 
 # In kết quả với định dạng số có dấu cách sau mỗi 3 chữ số
 print("Phân bổ chi tiêu dự kiến:")
 print("Ăn uống:", "{:,}".format(predicted_food))
 print("Nhà ở:", "{:,}".format(predicted_rent))
 print("Chi phí khác:", "{:,}".format(predicted_other))
-print("Tiết kiệm:", "{:,}".format(predicted_savings))
 
 # Kiểm tra lại tổng
-total_predicted = predicted_food + predicted_rent + predicted_other + predicted_savings
+total_predicted = predicted_food + predicted_rent + predicted_other 
 print("Tổng chi tiêu dự đoán:", "{:,}".format(total_predicted))
 
 # Dự đoán trên tập kiểm tra
