@@ -4,6 +4,12 @@ require('dotenv').config();
 const KEYFILE = process.env.KEYFILE;
 const SPREADSHEETID = process.env.SPREADSHEETID;
 
+module.exports = async (req, res) => {
+    // Kiểm tra phương thức của yêu cầu, phải là POST
+    if (req.method === 'POST') {
+        await getGoogleSheetData();
+  };
+}
 async function getGoogleSheetData() {
   const auth = new google.auth.GoogleAuth({
     keyFile: KEYFILE,
