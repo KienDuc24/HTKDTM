@@ -5,6 +5,10 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stdin.reconfigure(encoding='utf-8')
+
 
 # Đọc dữ liệu từ file CSV
 data = pd.read_csv('Data/Employee_data.csv')
@@ -36,19 +40,22 @@ model = RandomForestRegressor(n_estimators=100, max_depth=5, min_samples_split=1
 model.fit(X_train, y_train)
 
 # Nhập tổng tiền từ người dùng
-while True:
-    total_amount_str = input("Nhập tổng số tiền: ")
-    total_amount_str = total_amount_str.replace(",", "").replace(" ", "")
-    total_amount_str = total_amount_str.replace(".", "").replace(" ", "")
-    if "tr" in total_amount_str:
-        total_amount_str = total_amount_str.replace("tr", "")
-        total_amount = float(total_amount_str) * 1000000
-    else:
-        try:
-            total_amount = float(total_amount_str)
-            break
-        except ValueError:
-            print("Vui lòng nhập số!")
+# while True:
+#     total_amount_str = input("Nhập tổng số tiền: ")
+#     total_amount_str = total_amount_str.replace(",", "").replace(" ", "")
+#     total_amount_str = total_amount_str.replace(".", "").replace(" ", "")
+#     if "tr" in total_amount_str:
+#         total_amount_str = total_amount_str.replace("tr", "")
+#         total_amount = float(total_amount_str) * 1000000
+#     else:
+#         try:
+#             total_amount = float(total_amount_str)
+#             break
+#         except ValueError:
+#             print("Vui lòng nhập số!")
+
+# total_amount = 9000000
+total_amount = int(sys.argv[1])
 
 # Tính giá trị trung bình của các cột 
 mean_food_cost = data['food_cost'].mean()
@@ -74,15 +81,14 @@ predicted_other = round(predicted_ratios[2] * total_amount / 1000) * 1000
 predicted_savings = round(predicted_ratios[3] * total_amount / 1000) * 1000
 
 # In kết quả với định dạng số có dấu cách sau mỗi 3 chữ số
-print("Phân bổ chi tiêu dự kiến:")
-print("Ăn uống:", "{:,}".format(predicted_food))
-print("Nhà ở:", "{:,}".format(predicted_rent))
-print("Chi phí khác:", "{:,}".format(predicted_other))
-print("Tiết kiệm:", "{:,}".format(predicted_savings))
+print("{:,}".format(predicted_food))
+print("{:,}".format(predicted_rent))
+print("{:,}".format(predicted_other))
+print("{:,}".format(predicted_savings))
 
 # Kiểm tra lại tổng
 total_predicted = predicted_food + predicted_rent + predicted_other + predicted_savings
-print("Tổng chi tiêu dự đoán:", "{:,}".format(total_predicted))
+# print("Tổng chi tiêu dự đoán:", "{:,}".format(total_predicted))
 
 # Dự đoán trên tập kiểm tra
 y_pred = model.predict(X_test)
@@ -94,17 +100,17 @@ r2 = r2_score(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 adjusted_r2 = 1 - (1 - r2) * (len(y_test) - 1) / (len(y_test) - X_test.shape[1] - 1)
 
-print(f"Mô hình có khả năng dự đoán {r2*100:.2f}%")
-print(f"Adjusted R²: {adjusted_r2:.2f}")
-print("Các chỉ số đánh giá:")
-print("Mean Squared Error:", mse)
-print("Root Mean Squared Error:", rmse)
-print("Mean Absolute Error:", mae)
+# print(f"Mô hình có khả năng dự đoán {r2*100:.2f}%")
+# print(f"Adjusted R²: {adjusted_r2:.2f}")
+# print("Các chỉ số đánh giá:")
+# print("Mean Squared Error:", mse)
+# print("Root Mean Squared Error:", rmse)
+# print("Mean Absolute Error:", mae)
 
 # Trực quan hóa kết quả dự đoán
-plt.scatter(y_test.values.flatten(), y_pred.flatten(), alpha=0.5)
-plt.plot([0, 1], [0, 1], '--r')
-plt.xlabel("Giá trị thực")
-plt.ylabel("Giá trị dự đoán")
-plt.title("Dự đoán so với giá trị thực")
-plt.show()
+# plt.scatter(y_test.values.flatten(), y_pred.flatten(), alpha=0.5)
+# plt.plot([0, 1], [0, 1], '--r')
+# plt.xlabel("Giá trị thực")
+# plt.ylabel("Giá trị dự đoán")
+# plt.title("Dự đoán so với giá trị thực")
+# plt.show()
